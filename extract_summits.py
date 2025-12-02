@@ -3,6 +3,7 @@
 
 import csv
 import json
+import os
 import sys
 
 pua = {"E028": "瘤", "E06E": "那", "E084": "蓮", "E093": "馿"}
@@ -20,6 +21,7 @@ def translate_gaiji(name, gaiji_flg):
     gaiji_code = pattern[i : n - j]
     if gaiji_code.startswith("E"):
         if not gaiji_code in pua:
+            print(f"警告: 未知のPUAコード {gaiji_code} が見つかりました。", file=sys.stderr)
             return name  # Private Use Area は無視
         gaiji_char = pua[gaiji_code]
     else:
@@ -40,6 +42,9 @@ def main():
 
         # 空行はスキップ
         if not file_path:
+            continue
+
+        if not (os.path.exists(file_path) and os.path.getsize(file_path) > 0):
             continue
 
         try:
